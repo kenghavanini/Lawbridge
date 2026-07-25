@@ -19,25 +19,27 @@ export default function Home() {
       {/* Header */}
       <div className="max-w-4xl mx-auto w-full flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <span className={`text-xs font-bold px-2.5 py-1 rounded ${darkMode ? 'bg-zinc-800 text-zinc-300' : 'bg-zinc-200 text-zinc-800'}`}>CA</span>
-          <span className={`text-xs font-bold px-2.5 py-1 rounded ${darkMode ? 'bg-zinc-800 text-zinc-300' : 'bg-zinc-200 text-zinc-800'}`}>NY</span>
-          <span className={`text-xs font-bold px-2.5 py-1 rounded ${darkMode ? 'bg-zinc-800 text-zinc-300' : 'bg-zinc-200 text-zinc-800'}`}>London</span>
+          <span className={`text-xs font-bold px-2.5 py-1 rounded border ${darkMode ? 'border-zinc-800 bg-zinc-900 text-zinc-300' : 'border-zinc-300 bg-zinc-100 text-zinc-800'}`}>CA</span>
+          <span className={`text-xs font-bold px-2.5 py-1 rounded border ${darkMode ? 'border-zinc-800 bg-zinc-900 text-zinc-300' : 'border-zinc-300 bg-zinc-100 text-zinc-800'}`}>NY</span>
+          <span className={`text-xs font-bold px-2.5 py-1 rounded border ${darkMode ? 'border-zinc-800 bg-zinc-900 text-zinc-300' : 'border-zinc-300 bg-zinc-100 text-zinc-800'}`}>London</span>
         </div>
         <div className="flex items-center gap-4">
-          <div className="text-xs font-semibold text-orange-500 uppercase tracking-widest hidden sm:block">
+          <div className={`text-xs font-semibold uppercase tracking-widest hidden sm:block ${darkMode ? 'text-zinc-400' : 'text-zinc-600'}`}>
             Secure Legal Infrastructure
           </div>
           <button
             onClick={() => setDarkMode(!darkMode)}
             className={`px-3 py-1.5 rounded-full text-xs font-bold border transition ${
-              darkMode ? 'border-zinc-700 bg-zinc-900 text-orange-400 hover:bg-zinc-800' : 'border-zinc-300 bg-zinc-100 text-orange-600 hover:bg-zinc-200'
+              darkMode ? 'border-zinc-700 bg-zinc-900 text-white hover:bg-zinc-800' : 'border-zinc-300 bg-zinc-100 text-black hover:bg-zinc-200'
             }`}
           >
             {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
           </button>
           <Link
             href="/login"
-            className="text-xs font-bold px-3 py-1.5 rounded bg-orange-500 text-black hover:bg-orange-400 transition"
+            className={`text-xs font-bold px-3 py-1.5 rounded transition border ${
+              darkMode ? 'bg-white text-black border-white hover:bg-zinc-200' : 'bg-black text-white border-black hover:bg-zinc-800'
+            }`}
           >
             Sign In
           </Link>
@@ -46,7 +48,7 @@ export default function Home() {
 
       {/* Main Content */}
       <div className="max-w-xl mx-auto text-center my-auto">
-        <p className="text-orange-500 text-xs font-black uppercase tracking-widest mb-3">
+        <p className={`text-xs font-black uppercase tracking-widest mb-3 ${darkMode ? 'text-zinc-400' : 'text-zinc-600'}`}>
           Production Ready
         </p>
         <h1 className="text-4xl sm:text-5xl font-black mb-4 tracking-tight">
