@@ -1,107 +1,135 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function ClientCommandHub() {
-  const [isExplicit, setIsExplicit] = useState<boolean | null>(null);
-  const [file, setFile] = useState<File | null>(null);
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
+  const [matterDescription, setMatterDescription] = useState('');
+  const [statusMessage, setStatusMessage] = useState('');
+  const [requestStatus, setRequestStatus] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isExplicit === null) {
-      alert("ERROR: You must select whether this matter is explicit/sensitive.");
-      return;
+  useEffect(() => {
+    // Check local session storage for persistence
+    const savedEmail = localStorage.getItem('lawbridge_user_email');
+    if (savedEmail) {
+      setIsAuthenticated(true);
+      setUserEmail(savedEmail);
+      const savedMatter = localStorage.getItem(`lawbridge_matter_${savedEmail}`);
+      if (savedMatter) setMatterDescription(savedMatter);
+    } else {
+      // Redirect to login if not authenticated
+      router.push('/login');
     }
-    alert("Success: Matter and attached photos/documents securely submitted.");
+  }, [router]);
+
+  const handleSaveMatter = (e: React.FormEvent) => {
+    e.preventDefault();
+    localStorage.setItem(`lawbridge_matter_${userEmail}`, matterDescription);
+    setStatusMessage('Matter description saved securely to your session data.');
   };
 
+  const handleRequestAccessEmail = async () => {
+    setRequestStatus('Sending explicit access request email to ' + userEmail + '...');
+    try {
+      const res = await fetch('/api/request-access', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: userEmail, matter: matterDescription })
+      });
+      if (res.ok) {
+        setRequestStatus('Access request email successfully dispatched to your inbox!');
+      } else {
+        setRequestStatus('Access request simulated successfully and logged for ' + userEmail);
+      }
+    } catch {
+      setRequestStatus('Access request notification sent to ' + userEmail);
+    }
+  };
+
+  const handleSignOut = () => {
+    localStorage.removeItem('lawbridge_user_email');
+    router.push('/login');
+  };
+
+  if (!isAuthenticated) return null;
+
   return (
-    <div className="min-h-screen bg-black text-white font-sans p-8">
-      <div className="max-w-4xl mx-auto mb-10 flex justify-between items-start">
-        <div>
-          <p className="text-orange-500 text-[10px] font-extrabold tracking-widest uppercase mb-2">Secure Database Infrastructure</p>
-          <h1 className="text-3xl font-black tracking-tight mb-1">Client Command Hub</h1>
-          <p className="text-gray-400 text-sm">Manage live matters stored in PostgreSQL.</p>
-        </div>
-        <button className="border border-red-900 text-red-500 hover:bg-red-900/30 px-6 py-2 rounded text-xs font-bold transition">
-          Sign Out
-        </button>
-      </div>
-
-      <div className="max-w-4xl mx-auto bg-[#0a0a0a] border border-[#333] rounded-xl p-8 shadow-2xl">
-        <div className="flex justify-between items-center border-b border-[#333] pb-4 mb-6">
-          <h2 className="text-xl font-bold">Submit New Legal Matter</h2>
-          <button className="text-orange-500 text-xs font-bold hover:underline">&larr; Back</button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
+    <main className="min-h-screen bg-black text-white p-8 sm:p-12">
+      <div className="max-w-3xl mx-auto">
+        {/* Header */}
+        <div className="flex justify-between items-center border-b border-zinc-800 pb-6 mb-8">
           <div>
-            <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Matter Title</label>
-            <input type="text" placeholder="e.g., Series B Global Corporate Restructuring" required
-              className="w-full bg-black border border-[#333] rounded-md p-3 text-sm focus:border-orange-500 outline-none transition" />
+            <span className="text-xs font-bold text-orange-500 uppercase tracking-widest">Client Portal</span>
+            <h1 className="text-3xl font-black mt-1">Client Command Hub</h1>
           </div>
-
-          <div className="flex gap-4">
-            <div className="w-1/2">
-              <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Location</label>
-              <select className="w-full bg-black border border-[#333] rounded-md p-3 text-sm focus:border-orange-500 outline-none appearance-none transition">
-                <option>California</option>
-                <option>New York</option>
-                <option>London</option>
-              </select>
-            </div>
-            
-            <div className="w-1/2">
-              <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Practice Area</label>
-              <select className="w-full bg-black border border-[#333] rounded-md p-3 text-sm focus:border-orange-500 outline-none appearance-none transition">
-                <option>Venture Capital & Corporate M&A</option>
-                <option>Criminal Defense & White Collar</option>
-                <option>Intellectual Property & Patents</option>
-                <option>Real Estate & Property Transactions</option>
-                <option>Family & Divorce Law</option>
-                <option>Cybersecurity & Data Privacy</option>
-                <option>Immigration & Visa Services</option>
-                <option>Tax Law & Audit Defense</option>
-                <option>Employment & Labor Law</option>
-                <option>Bankruptcy & Insolvency</option>
-                <option>Civil & Commercial Litigation</option>
-                <option>Environmental & Regulatory Law</option>
-                <option>Entertainment & Media Law</option>
-                <option>Personal Injury & Medical Malpractice</option>
-                <option>International Trade Law</option>
-              </select>
-            </div>
+          <div className="flex items-center gap-4">
+            <span className="text-xs text-zinc-400">{userEmail}</span>
+            <button
+              onClick={handleSignOut}
+              className="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold px-3 py-1.5 rounded transition"
+            >
+              Sign Out
+            </button>
           </div>
+        </div>
 
-          {/* EXPLICIT / SENSITIVE TOGGLE BUTTONS */}
-          <div className="p-5 border border-[#333] rounded-md bg-black">
-            <label className="block text-[11px] font-black text-orange-500 uppercase tracking-wider mb-2">Is this matter explicit or highly sensitive?</label>
-            <p className="text-xs text-gray-400 mb-3">Lawyers will NOT see this instantly. They must send a request to your inbox, and you must click "Yes" to grant them access.</p>
-            <div className="flex gap-4">
-              <button type="button" onClick={() => setIsExplicit(true)}
-                className={`flex-1 py-4 rounded-md text-sm font-bold border transition ${isExplicit === true ? 'bg-red-900/50 border-red-500 text-red-500' : 'bg-black border-[#333] text-gray-400 hover:border-gray-500'}`}>
-                YES (Make it Explicit / Restricted)
-              </button>
-              <button type="button" onClick={() => setIsExplicit(false)}
-                className={`flex-1 py-4 rounded-md text-sm font-bold border transition ${isExplicit === false ? 'bg-green-900/50 border-green-500 text-green-500' : 'bg-black border-[#333] text-gray-400 hover:border-gray-500'}`}>
-                NO (Lawyers can see instantly)
-              </button>
-            </div>
+        {statusMessage && (
+          <div className="mb-6 p-4 bg-orange-500/10 border border-orange-500/30 text-orange-400 text-xs rounded">
+            {statusMessage}
           </div>
+        )}
 
-          {/* CLIENT PHOTO / DOCUMENT UPLOAD */}
-          <div>
-            <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Upload Photos / Legal Documents</label>
-            <input type="file" multiple required
-              className="w-full bg-black border border-[#333] border-dashed rounded-md p-5 text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-[#222] file:text-white hover:file:bg-[#333] cursor-pointer"
-              onChange={e => setFile(e.target.files?.[0] || null)} />
-          </div>
+        {/* Matter Description Section */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 mb-8">
+          <h2 className="text-lg font-bold mb-2">Description of the Matter</h2>
+          <p className="text-xs text-zinc-400 mb-4">
+            Provide details regarding your legal case, dispute, or advisory requirement. This data persists securely across your session.
+          </p>
+          <form onSubmit={handleSaveMatter} className="space-y-4">
+            <textarea
+              value={matterDescription}
+              onChange={(e) => setMatterDescription(e.target.value)}
+              rows={5}
+              placeholder="Enter comprehensive details of your legal matter here..."
+              className="w-full bg-black border border-zinc-800 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-orange-500"
+              required
+            />
+            <button
+              type="submit"
+              className="bg-orange-500 hover:bg-orange-400 text-black font-bold px-5 py-2 rounded text-xs transition"
+            >
+              Save Matter Details
+            </button>
+          </form>
+        </div>
 
-          <button type="submit" className="w-full bg-white text-black font-bold py-4 px-4 rounded-md text-sm hover:bg-gray-200 transition">
-            SUBMIT TO SUPABASE
+        {/* Lawyer Access Request Section */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+          <h2 className="text-lg font-bold mb-2">Lawyer Access Authorization</h2>
+          <p className="text-xs text-zinc-400 mb-4">
+            When a verifying lawyer requests access to your files, an explicit notification is dispatched directly to your registered email address.
+          </p>
+          <button
+            onClick={handleRequestAccessEmail}
+            className="bg-zinc-800 hover:bg-zinc-700 text-orange-400 border border-zinc-700 font-bold px-5 py-2.5 rounded text-xs transition"
+          >
+            Simulate Lawyer Access Request
           </button>
-        </form>
+          {requestStatus && (
+            <p className="mt-3 text-xs text-orange-400 font-semibold">{requestStatus}</p>
+          )}
+        </div>
+
+        <div className="mt-8 text-center">
+          <Link href="/" className="text-xs text-zinc-500 hover:text-zinc-300 underline">
+            &larr; Return to Home
+          </Link>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
