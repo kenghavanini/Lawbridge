@@ -1,86 +1,46 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 
 export default function Home() {
-  const [darkMode, setDarkMode] = useState(true);
-
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [darkMode]);
-
   return (
-    <main className={`min-h-screen transition-colors duration-200 ${darkMode ? 'bg-black text-white' : 'bg-white text-black'} flex flex-col justify-between p-8 sm:p-12`}>
-      {/* Header */}
-      <div className="max-w-4xl mx-auto w-full flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <span className={`text-xs font-bold px-2.5 py-1 rounded border ${darkMode ? 'border-zinc-800 bg-zinc-900 text-zinc-300' : 'border-zinc-300 bg-zinc-100 text-zinc-800'}`}>CA</span>
-          <span className={`text-xs font-bold px-2.5 py-1 rounded border ${darkMode ? 'border-zinc-800 bg-zinc-900 text-zinc-300' : 'border-zinc-300 bg-zinc-100 text-zinc-800'}`}>NY</span>
-          <span className={`text-xs font-bold px-2.5 py-1 rounded border ${darkMode ? 'border-zinc-800 bg-zinc-900 text-zinc-300' : 'border-zinc-300 bg-zinc-100 text-zinc-800'}`}>London</span>
+    <main className="min-h-screen bg-black text-white flex flex-col justify-center items-center p-8">
+      <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
+        
+        {/* Top Badge */}
+        <div className="inline-block px-4 py-1.5 rounded-full border border-zinc-800 mb-8">
+          <span className="text-[10px] sm:text-xs font-semibold text-zinc-500 uppercase tracking-widest">
+            Enterprise-Grade Legal Infrastructure
+          </span>
         </div>
-        <div className="flex items-center gap-4">
-          <div className={`text-xs font-semibold uppercase tracking-widest hidden sm:block ${darkMode ? 'text-zinc-400' : 'text-zinc-600'}`}>
-            Secure Legal Infrastructure
-          </div>
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className={`px-3 py-1.5 rounded-full text-xs font-bold border transition ${
-              darkMode ? 'border-zinc-700 bg-zinc-900 text-white hover:bg-zinc-800' : 'border-zinc-300 bg-zinc-100 text-black hover:bg-zinc-200'
-            }`}
-          >
-            {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
-          </button>
-          <Link
-            href="/login"
-            className={`text-xs font-bold px-3 py-1.5 rounded transition border ${
-              darkMode ? 'bg-white text-black border-white hover:bg-zinc-200' : 'bg-black text-white border-black hover:bg-zinc-800'
-            }`}
-          >
-            Sign In
-          </Link>
-        </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="max-w-xl mx-auto text-center my-auto">
-        <p className={`text-xs font-black uppercase tracking-widest mb-3 ${darkMode ? 'text-zinc-400' : 'text-zinc-600'}`}>
-          Production Ready
-        </p>
-        <h1 className="text-4xl sm:text-5xl font-black mb-4 tracking-tight">
-          LawBridge Platform
+        {/* Main Headline */}
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 tracking-tight leading-tight">
+          The Autonomous Operating System<br className="hidden sm:block" /> for Legal Practice
         </h1>
-        <p className={`mb-8 text-sm ${darkMode ? 'text-zinc-400' : 'text-zinc-600'}`}>
-          Select your portal to begin testing:
+
+        {/* Subheadline */}
+        <p className="text-zinc-400 text-sm sm:text-base max-w-2xl mx-auto mb-12 leading-relaxed">
+          Real-time multi-user redlining, AI-powered contract risk analysis, and automated escrow settlement backed by bank-grade vector search and RLS security.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        {/* Call to Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full sm:w-auto">
           <Link
             href="/verify-lawyer"
-            className={`w-full sm:w-auto font-bold px-6 py-3 rounded-lg text-sm transition border ${
-              darkMode ? 'bg-zinc-900 text-white border-zinc-700 hover:bg-zinc-800' : 'bg-zinc-100 text-black border-zinc-300 hover:bg-zinc-200'
-            }`}
+            className="w-full sm:w-auto bg-white text-black text-xs font-bold px-8 py-4 rounded-sm transition hover:bg-zinc-200 uppercase tracking-wider"
           >
-            Lawyer Verification
+            Launch Lawyer Workspace
           </Link>
           <Link
             href="/dashboard/client"
-            className={`w-full sm:w-auto font-bold px-6 py-3 rounded-lg text-sm transition border ${
-              darkMode ? 'bg-zinc-900 text-white border-zinc-700 hover:bg-zinc-800' : 'bg-zinc-100 text-black border-zinc-300 hover:bg-zinc-200'
-            }`}
+            className="w-full sm:w-auto bg-black text-white border border-zinc-600 text-xs font-bold px-8 py-4 rounded-sm transition hover:bg-zinc-900 uppercase tracking-wider"
           >
-            Client Command Hub
+            View Client Portal
           </Link>
         </div>
-      </div>
 
-      {/* Footer */}
-      <div className={`text-center text-xs ${darkMode ? 'text-zinc-600' : 'text-zinc-400'}`}>
-        LawBridge Systems &bull; Multi-Jurisdictional Compliance Engine
       </div>
     </main>
   );
