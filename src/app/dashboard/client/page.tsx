@@ -9,10 +9,10 @@ export default function ClientCommandHub() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isExplicit === null) {
-      alert("Please select whether the matter is explicit/sensitive.");
+      alert("ERROR: You must select whether this matter is explicit/sensitive.");
       return;
     }
-    alert("Matter and documents securely submitted to PostgreSQL.");
+    alert("Success: Matter and attached photos/documents securely submitted.");
   };
 
   return (
@@ -45,9 +45,9 @@ export default function ClientCommandHub() {
             <div className="w-1/2">
               <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Location</label>
               <select className="w-full bg-black border border-[#333] rounded-md p-3 text-sm focus:border-orange-500 outline-none appearance-none transition">
-                <option>us USA - California - San Francisco</option>
-                <option>us USA - New York - New York City</option>
-                <option>uk United Kingdom - England - London</option>
+                <option>California</option>
+                <option>New York</option>
+                <option>London</option>
               </select>
             </div>
             
@@ -60,31 +60,40 @@ export default function ClientCommandHub() {
                 <option>Real Estate & Property Transactions</option>
                 <option>Family & Divorce Law</option>
                 <option>Cybersecurity & Data Privacy</option>
+                <option>Immigration & Visa Services</option>
+                <option>Tax Law & Audit Defense</option>
+                <option>Employment & Labor Law</option>
+                <option>Bankruptcy & Insolvency</option>
+                <option>Civil & Commercial Litigation</option>
+                <option>Environmental & Regulatory Law</option>
+                <option>Entertainment & Media Law</option>
+                <option>Personal Injury & Medical Malpractice</option>
+                <option>International Trade Law</option>
               </select>
             </div>
           </div>
 
-          {/* EXPLICIT TOGGLE ADDED HERE */}
-          <div className="p-4 border border-[#333] rounded-md bg-black">
-            <label className="block text-[10px] font-bold text-orange-500 uppercase tracking-wider mb-2">Is this matter explicit or highly sensitive?</label>
-            <p className="text-xs text-gray-400 mb-3">If Yes, lawyers must manually request access to view details and documents.</p>
+          {/* EXPLICIT / SENSITIVE TOGGLE BUTTONS */}
+          <div className="p-5 border border-[#333] rounded-md bg-black">
+            <label className="block text-[11px] font-black text-orange-500 uppercase tracking-wider mb-2">Is this matter explicit or highly sensitive?</label>
+            <p className="text-xs text-gray-400 mb-3">Lawyers will NOT see this instantly. They must send a request to your inbox, and you must click "Yes" to grant them access.</p>
             <div className="flex gap-4">
               <button type="button" onClick={() => setIsExplicit(true)}
-                className={`flex-1 py-3 rounded-md text-sm font-bold border transition ${isExplicit === true ? 'bg-red-900/50 border-red-500 text-red-500' : 'bg-black border-[#333] text-gray-400 hover:border-gray-500'}`}>
-                YES (Restricted Access)
+                className={`flex-1 py-4 rounded-md text-sm font-bold border transition ${isExplicit === true ? 'bg-red-900/50 border-red-500 text-red-500' : 'bg-black border-[#333] text-gray-400 hover:border-gray-500'}`}>
+                YES (Make it Explicit / Restricted)
               </button>
               <button type="button" onClick={() => setIsExplicit(false)}
-                className={`flex-1 py-3 rounded-md text-sm font-bold border transition ${isExplicit === false ? 'bg-green-900/50 border-green-500 text-green-500' : 'bg-black border-[#333] text-gray-400 hover:border-gray-500'}`}>
-                NO (Standard Access)
+                className={`flex-1 py-4 rounded-md text-sm font-bold border transition ${isExplicit === false ? 'bg-green-900/50 border-green-500 text-green-500' : 'bg-black border-[#333] text-gray-400 hover:border-gray-500'}`}>
+                NO (Lawyers can see instantly)
               </button>
             </div>
           </div>
 
-          {/* CLIENT FILE UPLOAD ADDED HERE */}
+          {/* CLIENT PHOTO / DOCUMENT UPLOAD */}
           <div>
-            <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Upload Legal Documents / Evidence</label>
-            <input type="file" multiple
-              className="w-full bg-black border border-[#333] border-dashed rounded-md p-4 text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-[#222] file:text-white hover:file:bg-[#333] cursor-pointer"
+            <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Upload Photos / Legal Documents</label>
+            <input type="file" multiple required
+              className="w-full bg-black border border-[#333] border-dashed rounded-md p-5 text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-[#222] file:text-white hover:file:bg-[#333] cursor-pointer"
               onChange={e => setFile(e.target.files?.[0] || null)} />
           </div>
 

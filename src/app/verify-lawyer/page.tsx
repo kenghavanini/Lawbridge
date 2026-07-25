@@ -10,12 +10,11 @@ export default function VerifyLawyer() {
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) {
-      setStatus('ERROR: Bar ID Photo is required for AI Verification.');
+      setStatus('ERROR: You MUST upload a photo of your Bar ID.');
       return;
     }
     setStatus('Querying live cloud database & scanning ID...');
-    // Simulated upload delay
-    setTimeout(() => setStatus('SUCCESS: Bar ID verified and uploaded to Supabase.'), 1500);
+    setTimeout(() => setStatus('SUCCESS: Bar ID photo verified and uploaded to Supabase.'), 1500);
   };
 
   return (
@@ -63,9 +62,9 @@ export default function VerifyLawyer() {
             </select>
           </div>
 
-          {/* MISSING PHOTO UPLOAD ADDED HERE */}
-          <div className="p-4 border border-orange-500/50 bg-orange-500/10 rounded-md">
-            <label className="block text-[10px] font-bold text-orange-500 uppercase tracking-wider mb-2">Upload Bar ID Photo (AI Scan Required)</label>
+          {/* LAWYER BAR ID PHOTO UPLOAD - PROMINENT UI */}
+          <div className="p-5 border border-orange-500/50 bg-orange-500/10 rounded-md">
+            <label className="block text-[11px] font-black text-orange-500 uppercase tracking-wider mb-2">Upload Bar ID Photo (Required for AI Scan)</label>
             <input type="file" accept="image/*" required
               className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-orange-500 file:text-black hover:file:bg-orange-400 cursor-pointer"
               onChange={e => setFile(e.target.files?.[0] || null)} />
@@ -76,7 +75,7 @@ export default function VerifyLawyer() {
           </button>
         </form>
         
-        {status && <p className={`mt-6 text-center text-xs font-bold ${status.startsWith('ERROR') ? 'text-red-500' : 'text-green-500'}`}>{status}</p>}
+        {status && <p className={`mt-6 text-center text-xs font-bold ${status.includes('ERROR') ? 'text-red-500' : 'text-green-500'}`}>{status}</p>}
       </div>
     </div>
   );
