@@ -620,7 +620,7 @@ create policy "case_documents_storage_insert" on storage.objects
 
 -- ----------------------------------------------------------------------------
 -- Added for the self-serve /verify flow (app/verify/page.tsx). Raw,
--- self-reported text for now — not yet reconciled against the structuredrun 
+-- self-reported text for now — not yet reconciled against the structuredrun n
 -- `jurisdictions` table. An admin review pass should migrate these into
 -- real lawyer_jurisdictions rows before this is trusted for production
 -- matching. Uses `if not exists` so re-running this file is safe.
