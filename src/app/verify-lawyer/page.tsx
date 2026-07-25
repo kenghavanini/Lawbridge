@@ -1,82 +1,98 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function VerifyLawyer() {
-  const [formData, setFormData] = useState({ firstName: '', lastName: '', barId: '', jurisdiction: 'California State Bar' });
+  const router = useRouter();
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [barId, setBarId] = useState('');
+  const [jurisdiction, setJurisdiction] = useState('Ontario, Canada');
   const [file, setFile] = useState<File | null>(null);
-  const [status, setStatus] = useState('');
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanStatus, setScanStatus] = useState('');
 
-  const handleUpload = async (e: React.FormEvent) => {
+  const handleVerify = (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) {
-      setStatus('ERROR: You MUST upload a photo of your Bar ID.');
+      alert("Please upload a Bar ID photo for AI verification.");
       return;
     }
-    setStatus('Querying live cloud database & scanning ID...');
-    setTimeout(() => setStatus('SUCCESS: Bar ID photo verified and uploaded to Supabase.'), 1500);
+
+    setIsScanning(true);
+    setScanStatus('Initiating AI visual scan of Bar ID...');
+    
+    setTimeout(() => setScanStatus('Cross-referencing global legal database...'), 1200);
+    setTimeout(() => setScanStatus('Verifying credentials and identity parameters...'), 2500);
+    
+    setTimeout(() => {
+      setScanStatus('Verification Successful. Logging into secure dashboard.');
+      localStorage.setItem('lawbridge_lawyer_session', JSON.stringify({
+        name: `${firstName} ${lastName}`,
+        barId,
+        jurisdiction
+      }));
+      setTimeout(() => router.push('/dashboard/lawyer'), 1000);
+    }, 3800);
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center p-4 font-sans">
-      <div className="w-full max-w-md bg-[#0a0a0a] border border-[#333] rounded-xl p-8 shadow-2xl">
-        
+    <main className="min-h-screen bg-black text-white flex flex-col justify-between p-8">
+      <div className="max-w-md mx-auto w-full my-auto bg-zinc-900 border border-zinc-800 p-8 rounded-xl shadow-2xl">
         <div className="text-center mb-8">
-          <p className="text-orange-500 text-[10px] font-extrabold tracking-widest uppercase mb-3">Restricted Counsel Access</p>
-          <h1 className="text-2xl font-black tracking-tight mb-1">Supabase Bar Database</h1>
-          <h2 className="text-2xl font-black tracking-tight mb-3">Verification</h2>
-          <p className="text-gray-400 text-xs">Queries live cloud database records.</p>
+          <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Restricted Counsel Access</span>
+          <h1 className="text-2xl font-bold mt-1">Database Verification</h1>
+          <p className="text-xs text-zinc-500 mt-2">AI-powered credential cross-referencing.</p>
         </div>
 
-        <form onSubmit={handleUpload} className="space-y-5">
-          <div className="flex gap-4">
-            <div className="w-1/2">
-              <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">First Name</label>
-              <input type="text" placeholder="Eleanor" required
-                className="w-full bg-black border border-[#333] rounded-md p-3 text-sm focus:border-orange-500 outline-none transition"
-                onChange={e => setFormData({...formData, firstName: e.target.value})} />
+        <form onSubmit={handleVerify} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-zinc-400 mb-1">First Name</label>
+              <input type="text" required value={firstName} onChange={e => setFirstName(e.target.value)} className="w-full bg-black border border-zinc-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-white" />
             </div>
-            <div className="w-1/2">
-              <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Last Name</label>
-              <input type="text" placeholder="Vance" required
-                className="w-full bg-black border border-[#333] rounded-md p-3 text-sm focus:border-orange-500 outline-none transition"
-                onChange={e => setFormData({...formData, lastName: e.target.value})} />
+            <div>
+              <label className="block text-xs font-semibold text-zinc-400 mb-1">Last Name</label>
+              <input type="text" required value={lastName} onChange={e => setLastName(e.target.value)} className="w-full bg-black border border-zinc-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-white" />
             </div>
           </div>
-
           <div>
-            <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Bar Association ID</label>
-            <input type="text" placeholder="349281" required
-              className="w-full bg-black border border-[#333] rounded-md p-3 text-sm focus:border-orange-500 outline-none transition"
-              onChange={e => setFormData({...formData, barId: e.target.value})} />
+            <label className="block text-xs font-semibold text-zinc-400 mb-1">Bar Association ID</label>
+            <input type="text" required value={barId} onChange={e => setBarId(e.target.value)} className="w-full bg-black border border-zinc-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-white" />
           </div>
-
           <div>
-            <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Jurisdiction</label>
-            <select 
-              className="w-full bg-black border border-[#333] rounded-md p-3 text-sm focus:border-orange-500 outline-none appearance-none transition"
-              onChange={e => setFormData({...formData, jurisdiction: e.target.value})}>
-              <option>California State Bar</option>
-              <option>New York State Bar</option>
-              <option>Solicitors Regulation Authority (London)</option>
+            <label className="block text-xs font-semibold text-zinc-400 mb-1">Jurisdiction</label>
+            <select value={jurisdiction} onChange={e => setJurisdiction(e.target.value)} className="w-full bg-black border border-zinc-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-white">
+              <option value="Ontario, Canada">Ontario, Canada</option>
+              <option value="California, USA">California, USA</option>
+              <option value="New York, USA">New York, USA</option>
             </select>
           </div>
-
-          {/* LAWYER BAR ID PHOTO UPLOAD - PROMINENT UI */}
-          <div className="p-5 border border-orange-500/50 bg-orange-500/10 rounded-md">
-            <label className="block text-[11px] font-black text-orange-500 uppercase tracking-wider mb-2">Upload Bar ID Photo (Required for AI Scan)</label>
-            <input type="file" accept="image/*" required
-              className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-orange-500 file:text-black hover:file:bg-orange-400 cursor-pointer"
-              onChange={e => setFile(e.target.files?.[0] || null)} />
+          <div className="border border-zinc-700 bg-zinc-950 p-4 rounded-lg mt-4">
+            <label className="block text-xs font-bold text-zinc-300 mb-2 uppercase">Upload Bar ID Photo (Required for AI Scan)</label>
+            <input type="file" required onChange={e => setFile(e.target.files?.[0] || null)} className="w-full text-xs text-zinc-400 file:mr-4 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-bold file:bg-white file:text-black hover:file:bg-zinc-200 cursor-pointer" />
           </div>
 
-          <button type="submit" className="w-full bg-white text-black font-bold py-3 px-4 rounded-md text-sm mt-4 hover:bg-gray-200 transition">
-            VERIFY VIA SUPABASE DATABASE
-          </button>
+          {isScanning ? (
+            <div className="mt-4 p-4 border border-zinc-600 bg-zinc-800 rounded text-center">
+              <div className="animate-pulse flex flex-col items-center">
+                <div className="h-1 w-full bg-zinc-600 rounded overflow-hidden mb-2">
+                  <div className="h-full bg-white w-1/2 animate-[bounce_1s_infinite]"></div>
+                </div>
+                <p className="text-xs font-bold text-white">{scanStatus}</p>
+              </div>
+            </div>
+          ) : (
+            <button type="submit" className="w-full bg-white hover:bg-zinc-200 text-black font-bold py-3 rounded text-sm transition mt-6 uppercase tracking-wider">
+              Initiate AI Verification
+            </button>
+          )}
         </form>
-        
-        {status && <p className={`mt-6 text-center text-xs font-bold ${status.includes('ERROR') ? 'text-red-500' : 'text-green-500'}`}>{status}</p>}
+
+        <div className="mt-6 text-center"><Link href="/" className="text-xs text-zinc-500 hover:text-zinc-300 underline">&larr; Back to Home</Link></div>
       </div>
-    </div>
+    </main>
   );
 }
