@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
@@ -11,10 +13,15 @@ export default function LoginPage() {
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    setMessage(isSignUp ? 'Account created successfully! You can now sign in.' : 'Signed in successfully!');
+    localStorage.setItem('lawbridge_user_email', email);
+    setMessage(isSignUp ? 'Account created! Redirecting to your matter...' : 'Signed in successfully! Redirecting...');
+    setTimeout(() => {
+      router.push('/dashboard/client');
+    }, 500);
   };
 
   const handleSignOut = () => {
+    localStorage.removeItem('lawbridge_user_email');
     setMessage('Signed out successfully. Session cleared.');
   };
 
@@ -59,7 +66,7 @@ export default function LoginPage() {
             type="submit"
             className="w-full bg-orange-500 hover:bg-orange-400 text-black font-bold py-2.5 rounded text-sm transition"
           >
-            {isSignUp ? 'Sign Up' : 'Sign In'}
+            {isSignUp ? 'Sign Up & Continue' : 'Sign In & Continue'}
           </button>
         </form>
 
@@ -71,6 +78,7 @@ export default function LoginPage() {
             Sign Out / Clear Session
           </button>
           <button
+            type="button"
             onClick={() => setIsSignUp(!isSignUp)}
             className="text-xs text-zinc-400 hover:text-orange-500 text-center mt-2 transition"
           >
