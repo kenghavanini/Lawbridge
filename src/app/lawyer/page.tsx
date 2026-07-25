@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { supabase } from '@/src/lib/supabase';
+import { supabase } from '@/lib/supabase';
 
 export default function LawyerDashboardPage() {
   const [viewMode, setViewMode] = useState<'dark' | 'light' | 'terminal'>('terminal');
@@ -241,3 +241,4 @@ export default function LawyerDashboardPage() {
     </div>
   );
 }
+
